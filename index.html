@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übersicht über Tools & Dienste an der THGA</title>
+    <style>
+        :root {
+            --primary-color: #004d99;
+            --secondary-color: #e6f0ff;
+            --text-color: #333;
+            --bg-color: #f4f7f6;
+            --card-bg: #fff;
+            --hover-color: #003366;
+            --hashtag-color: #007acc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Breadcrumbs */
+        #breadcrumb {
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        #breadcrumb span {
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        #breadcrumb span:hover {
+            text-decoration: underline;
+        }
+
+        /* Grid for Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-top: 4px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Detail View (Tools) */
+        .tool-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid #28a745;
+        }
+
+        .tool-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .tool-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        .tool-link:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Hashtags */
+        .hashtags {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hashtag {
+            background-color: var(--secondary-color);
+            color: var(--hashtag-color);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .hashtag:hover {
+            background-color: #cce0ff;
+        }
+
+        /* Fallback Notice */
+        .fallback-notice {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .fallback-notice a {
+            color: #856404;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #333;
+            color: white;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #4da6ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Utilities */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Übersicht über Tools & Dienste an der THGA</h1>
+        <p>Ihr Informationsportal für Kooperation, Recherche, Lehre und Verwaltung</p>
+    </header>
+
+    <main>
+        <div id="breadcrumb" class="hidden">
+            <span onclick="renderHome()">🏠 Startseite</span> <span id="breadcrumb-current"></span>
+        </div>
+
+        <div id="content-area" class="fade-in">
+            </div>
+    </main>
+
+    <footer>
+        <p><strong>Brauchen Sie Hilfe?</strong> Bei Fragen zu den Diensten und Tools besuchen Sie unsere IT-Dienste im Intranet:</p>
+        <p><a href="https://est1816.sharepoint.com/sites/Informationsportal/SitePages/Dienste.aspx" target="_blank">🔗 IT-Dienste Informationsportal</a></p>
+    </footer>
+
+    <script>
+        // --- DATA STRUCTURE ---
+
+        const categories = [
+            { id: 'lehre', title: 'Lehre & Lernen allgemein', icon: '🎓' },
+            { id: 'forschung', title: 'Forschung, Wissenschaft & Recherche', icon: '🔬' },
+            { id: 'orga', title: 'Organisation, Planung & Verwaltung', icon: '📅' },
+            { id: 'kollab', title: 'Zusammenarbeit & Kommunikation', icon: '🤝' },
+            { id: 'medien', title: 'Medienproduktion & Inhaltserstellung', icon: '🎨' }
+        ];
+
+        // Known Tools
+        const tools = {
+            zoomWhiteboard: { name: 'Zoom Whiteboard', url: '' },
+            terminplaner: { name: 'DFN Terminplaner', url: 'https://terminplaner6.dfn.de/' },
+            wekan: { name: 'Wekan (DMT-LB)', url: 'https://wekan.dmt-lb.de/' },
+            sciebo: { name: 'Sciebo', url: 'https://thga.sciebo.de/' },
+            thga42: { name: '42.thga.de', url: 'https://42.thga.de' },
+            chat: { name: '3cx / Zoom', url: '' },
+            onlineted: { name: 'OnlineTED / Zoom', url: 'https://thga.onlineted.de/' }
+        };
+
+        const useCases = [
+            {
+                title: "Erstellung von barrierearmen und mehrsprachigen Lehrmaterialien",
+                cats: ['lehre', 'medien'],
+                tags: ['#Material', '#Inklusion', '#Mehrsprachig', '#Barrierefrei'],
+                reqs: [{ action: "Grafiken / Bilder erstellen", tools: [tools.thga42] }, { action: "Aufgaben/Tests erstellen", tools: [tools.thga42] }]
+            },
+            {
+                title: "Kollaborative Betreuung von Abschlussarbeiten oder Praxisprojekten",
+                cats: ['lehre', 'kollab'],
+                tags: ['#Betreuung', '#Abschlussarbeit', '#Projekte', '#Kommunikation'],
+                reqs: [{ action: "Projekte visualisieren", tools: [tools.wekan] }, { action: "Dateien hochladen / teilen", tools: [tools.sciebo] }, { action: "mit dem Team chatten", tools: [tools.chat] }]
+            },
+            {
+                title: "Gemeinsames Brainstorming und Ideenentwicklung",
+                cats: ['kollab', 'orga'],
+                tags: ['#Brainstorming', '#Ideen', '#Kollaboration'],
+                reqs: [{ action: "Brainstorming (digital) machen", tools: [tools.zoomWhiteboard] }]
+            },
+            {
+                title: "Feedback, Evaluation und Auswertung",
+                cats: ['lehre', 'kollab'],
+                tags: ['#Feedback', '#Evaluation', '#Umfrage'],
+                reqs: [{ action: "eine Umfrage erstellen / teilen", tools: [tools.onlineted, tools.sciebo] }]
+            },
+            {
+                title: "Peer-Review und kollegiale Lehrentwicklung",
+                cats: ['lehre', 'kollab'],
+                tags: ['#PeerReview', '#Lehrentwicklung', '#Feedback'],
+                reqs: [{ action: "Dateien hochladen / teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Asynchrone Abstimmung und Wissensmanagement",
+                cats: ['orga', 'kollab'],
+                tags: ['#Wissensmanagement', '#Abstimmung', '#Asynchron'],
+                reqs: [{ action: "Arbeitsabläufe / Workflows definieren", tools: [tools.wekan] }, { action: "Quellen zentral sammeln/teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Gemeinsame Lehrveranstaltungsplanung im Lehrteam",
+                cats: ['lehre', 'orga'],
+                tags: ['#Planung', '#Lehre', '#Team'],
+                reqs: [{ action: "Termin(e) koordinieren", tools: [tools.terminplaner] }, { action: "Arbeitsabläufe definieren", tools: [tools.wekan] }]
+            },
+            {
+                title: "Team-Teaching und Abstimmung laufender Lehrveranstaltungen",
+                cats: ['lehre', 'kollab'],
+                tags: ['#TeamTeaching', '#Abstimmung', '#Lehre'],
+                reqs: [{ action: "mit dem Team / Kollegen chatten", tools: [tools.chat] }, { action: "Dateien hochladen / teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Zusammenarbeit mit Studierenden in projektbasierten Lehrformaten",
+                cats: ['lehre', 'kollab'],
+                tags: ['#Projekte', '#Studierende', '#Kollaboration'],
+                reqs: [{ action: "Projekte visualisieren", tools: [tools.wekan] }, { action: "Dateien hochladen / teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Koordination großer Lehrveranstaltungen mit Tutor:innen",
+                cats: ['lehre', 'orga'],
+                tags: ['#Verwaltung', '#Tutorien', '#Koordination'],
+                reqs: [{ action: "Termin(e) koordinieren", tools: [tools.terminplaner] }, { action: "Arbeitsabläufe definieren", tools: [tools.wekan] }, { action: "mit dem Team chatten", tools: [tools.chat] }]
+            },
+            {
+                title: "Gemeinsame Erstellung von (Lehr-)materialien",
+                cats: ['lehre', 'medien'],
+                tags: ['#Material', '#Erstellung', '#Kollaboration'],
+                reqs: [{ action: "Grafiken / Bilder erstellen", tools: [tools.thga42] }, { action: "Aufgaben/Tests erstellen", tools: [tools.thga42] }, { action: "Dateien hochladen / teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Kollaborative Medienproduktion",
+                cats: ['medien', 'kollab'],
+                tags: ['#Medien', '#Produktion', '#Kreativ'],
+                reqs: [{ action: "Grafiken / Bilder erstellen", tools: [tools.thga42] }, { action: "Programmieren", tools: [tools.thga42] }, { action: "Brainstorming (digital) machen", tools: [tools.zoomWhiteboard] }]
+            },
+            {
+                title: "Kollaborative Entwicklung von Prüfungen und Bewertungsrastern",
+                cats: ['lehre', 'orga'],
+                tags: ['#Prüfung', '#Bewertung', '#Kollaboration'],
+                reqs: [{ action: "Aufgaben/Tests erstellen", tools: [tools.thga42] }, { action: "Dateien hochladen / teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Gemeinsame Recherche und Literaturarbeit",
+                cats: ['forschung', 'kollab'],
+                tags: ['#Recherche', '#Literatur', '#Forschung'],
+                reqs: [{ action: "Recherche betreiben", tools: [tools.thga42] }, { action: "Forschungsdaten sortieren/auswerten", tools: [tools.thga42] }, { action: "Quellen zentral sammeln/teilen", tools: [tools.sciebo] }]
+            },
+            {
+                title: "Terminkoordination",
+                cats: ['orga', 'kollab'],
+                tags: ['#Termine', '#Verwaltung', '#Koordination'],
+                reqs: [{ action: "Termin(e) koordinieren", tools: [tools.terminplaner] }]
+            }
+        ];
+
+        // Collect all unique hashtags
+        const allHashtags = [...new Set(useCases.flatMap(uc => uc.tags))].sort();
+
+        // --- APP LOGIC ---
+
+        const contentArea = document.getElementById('content-area');
+        const breadcrumb = document.getElementById('breadcrumb');
+        const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+
+        function renderHome() {
+            breadcrumb.classList.add('hidden');
+            let html = `<div class="grid fade-in">`;
+            categories.forEach(cat => {
+                html += `
+                    <div class="card" onclick="renderCategory('${cat.id}')">
+                        <div class="card-icon">${cat.icon}</div>
+                        <div class="card-title">${cat.title}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            // Add a global hashtag cloud on the home page
+            html += `<h3 style="margin-top:40px;">Entdecken Sie Use-Cases über Hashtags:</h3><div class="hashtags fade-in">`;
+            allHashtags.forEach(tag => {
+                html += `<span class="hashtag" onclick="renderHashtag('${tag}')">${tag}</span>`;
+            });
+            html += `</div>`;
+
+            contentArea.innerHTML = html;
+        }
+
+        function renderCategory(catId) {
+            const category = categories.find(c => c.id === catId);
+            breadcrumb.classList.remove('hidden');
+            breadcrumbCurrent.innerHTML = ` > ${category.icon} ${category.title}`;
+
+            const filteredCases = useCases.filter(uc => uc.cats.includes(catId));
+
+            let html = `<h2>Use-Cases im Bereich: ${category.title}</h2>`;
+            html += `<div class="grid fade-in">`;
+            filteredCases.forEach((uc, index) => {
+                html += `
+                    <div class="card" onclick="renderUseCaseDetails(${index}, '${uc.title.replace(/'/g, "\\'")}')">
+                        <div class="card-title" style="font-size: 1.1em; color:#333;">${uc.title}</div>
+                        <div style="margin-top: 10px; font-size: 0.85em; color: var(--hashtag-color);">${uc.tags.join(' ')}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            contentArea.innerHTML = html;
+        }
+
+        function renderHashtag(tag) {
+            breadcrumb.classList.remove('hidden');
+            breadcrumbCurrent.innerHTML = ` > 🔍 Suche nach: ${tag}`;
+
+            const filteredCases = useCases.filter(uc => uc.tags.includes(tag));
+
+            let html = `<h2>Use-Cases mit dem Tag: ${tag}</h2>`;
+            html += `<div class="grid fade-in">`;
+            filteredCases.forEach((uc) => {
+                // Find original index
+                const originalIndex = useCases.findIndex(u => u.title === uc.title);
+                html += `
+                    <div class="card" onclick="renderUseCaseDetails(${originalIndex}, '${uc.title.replace(/'/g, "\\'")}')">
+                        <div class="card-title" style="font-size: 1.1em; color:#333;">${uc.title}</div>
+                        <div style="margin-top: 10px; font-size: 0.85em; color: var(--hashtag-color);">${uc.tags.join(' ')}</div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            contentArea.innerHTML = html;
+        }
+
+        function renderUseCaseDetails(index, titleStr) {
+            const uc = useCases[index];
+            breadcrumb.classList.remove('hidden');
+            // Check if we came from a category or tag to build breadcrumb intuitively
+            breadcrumbCurrent.innerHTML = ` > 📋 ${uc.title}`;
+
+            let html = `<div class="fade-in">`;
+            html += `<h2>${uc.title}</h2>`;
+            html += `<p>Um diesen Use-Case bestmöglich abzubilden, empfehlen wir folgende Tools & Dienste:</p>`;
+
+            let hasTools = false;
+
+            uc.reqs.forEach(req => {
+                hasTools = true;
+                html += `<div class="tool-box">
+                            <h3>Bedarf: ${req.action}</h3>
+                            <p><strong>Empfohlenes Tool:</strong></p>`;
+                req.tools.forEach(t => {
+                    if(t.url) {
+                        html += `<a href="${t.url}" target="_blank" class="tool-link">🔗 ${t.name}</a>`;
+                    } else {
+                        html += `<span class="tool-link" style="background-color:#6c757d; cursor:default;">✔️ ${t.name}</span>`;
+                    }
+                });
+                html += `</div>`;
+            });
+
+            // Datenschutz / Fallback Notice
+            html += `
+                <div class="fallback-notice">
+                    <strong>Hinweis:</strong> Falls für Ihre konkreten Anforderungen keine direkte Verlinkung vorhanden ist oder interne Tools den Bedarf nicht vollständig abdecken, empfehlen wir die Nutzung datenschutzkonformer, kostenloser Alternativen. 
+                    Bitte prüfen Sie solche Dritt-Tools stets vorab gemäß unseren internen Richtlinien: <br>
+                    <a href="https://moodle.thga.de/course/view.php?id=2963" target="_blank">➡️ Internen Richtlinien und Vorgaben (Moodle) überprüfen</a>
+                </div>
+            `;
+
+            // Related Hashtags
+            html += `<div class="hashtags">
+                        <strong style="width: 100%; margin-bottom: 10px;">Verwandte Themen & Use-Cases:</strong>`;
+            uc.tags.forEach(tag => {
+                html += `<span class="hashtag" onclick="renderHashtag('${tag}')">${tag}</span>`;
+            });
+            html += `</div></div>`;
+
+            contentArea.innerHTML = html;
+        }
+
+        // Initialize App
+        renderHome();
+
+    </script>
+</body>
+</html>
