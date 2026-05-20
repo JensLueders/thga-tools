@@ -109,6 +109,14 @@
             color: var(--primary-color);
         }
 
+        .tool-flex-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
         .tool-link {
             display: inline-block;
             background-color: var(--primary-color);
@@ -116,12 +124,27 @@
             padding: 8px 15px;
             text-decoration: none;
             border-radius: 5px;
-            margin-top: 10px;
-            margin-right: 10px;
         }
 
         .tool-link:hover {
             background-color: var(--hover-color);
+        }
+
+        /* Explain Button */
+        .explain-btn {
+            background: none;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .explain-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
         }
 
         /* Hashtags */
@@ -200,7 +223,7 @@
 
     <main>
         <div id="breadcrumb" class="hidden">
-            <span onclick="renderHome()">🏠 Startseite</span> <span id="breadcrumb-current"></span>
+            <span onclick="navigateTo('home')">🏠 Startseite</span> <span id="breadcrumb-current"></span>
         </div>
 
         <div id="content-area" class="fade-in">
@@ -213,7 +236,7 @@
     </footer>
 
     <script>
-        // --- DATA STRUCTURE ---
+        // --- DATENSTRUKTUR ---
 
         const categories = [
             { id: 'lehre', title: 'Lehre & Lernen allgemein', icon: '🎓' },
@@ -223,7 +246,6 @@
             { id: 'medien', title: 'Medienproduktion & Inhaltserstellung', icon: '🎨' }
         ];
 
-        // Known Tools
         const tools = {
             zoomWhiteboard: { name: 'Zoom Whiteboard', url: '' },
             terminplaner: { name: 'DFN Terminplaner', url: 'https://terminplaner6.dfn.de/' },
@@ -327,21 +349,50 @@
             }
         ];
 
-        // Collect all unique hashtags
         const allHashtags = [...new Set(useCases.flatMap(uc => uc.tags))].sort();
 
-        // --- APP LOGIC ---
+        // --- NAVIGATION LOGIC (History & Back Button Support) ---
+
+        function navigateTo(page, value = '') {
+            if (page === 'home') window.location.hash = 'home';
+            else if (page === 'category') window.location.hash = 'category-' + value;
+            else if (page === 'hashtag') window.location.hash = 'hashtag-' + encodeURIComponent(value);
+            else if (page === 'usecase') window.location.hash = 'usecase-' + value;
+        }
+
+        function handleRouting() {
+            const hash = window.location.hash || '#home';
+            
+            if (hash === '#home') {
+                showHomeView();
+            } else if (hash.startsWith('#category-')) {
+                const catId = hash.replace('#category-', '');
+                showCategoryView(catId);
+            } else if (hash.startsWith('#hashtag-')) {
+                const tag = decodeURIComponent(hash.replace('#hashtag-', ''));
+                showHashtagView(tag);
+            } else if (hash.startsWith('#usecase-')) {
+                const index = parseInt(hash.replace('#usecase-', ''), 10);
+                showUseCaseDetailsView(index);
+            }
+        }
+
+        // Event-Listener für Browser-Verlauf (Zurück-Button / Maus-Gesten)
+        window.addEventListener('hashchange', handleRouting);
+        window.addEventListener('load', handleRouting);
+
+        // --- RENDER FUNCTIONS ---
 
         const contentArea = document.getElementById('content-area');
         const breadcrumb = document.getElementById('breadcrumb');
         const breadcrumbCurrent = document.getElementById('breadcrumb-current');
 
-        function renderHome() {
+        function showHomeView() {
             breadcrumb.classList.add('hidden');
             let html = `<div class="grid fade-in">`;
             categories.forEach(cat => {
                 html += `
-                    <div class="card" onclick="renderCategory('${cat.id}')">
+                    <div class="card" onclick="navigateTo('category', '${cat.id}')">
                         <div class="card-icon">${cat.icon}</div>
                         <div class="card-title">${cat.title}</div>
                     </div>
@@ -349,18 +400,18 @@
             });
             html += `</div>`;
             
-            // Add a global hashtag cloud on the home page
             html += `<h3 style="margin-top:40px;">Entdecken Sie Use-Cases über Hashtags:</h3><div class="hashtags fade-in">`;
             allHashtags.forEach(tag => {
-                html += `<span class="hashtag" onclick="renderHashtag('${tag}')">${tag}</span>`;
+                html += `<span class="hashtag" onclick="navigateTo('hashtag', '${tag}')">${tag}</span>`;
             });
             html += `</div>`;
 
             contentArea.innerHTML = html;
         }
 
-        function renderCategory(catId) {
+        function showCategoryView(catId) {
             const category = categories.find(c => c.id === catId);
+            if (!category) return;
             breadcrumb.classList.remove('hidden');
             breadcrumbCurrent.innerHTML = ` > ${category.icon} ${category.title}`;
 
@@ -368,9 +419,11 @@
 
             let html = `<h2>Use-Cases im Bereich: ${category.title}</h2>`;
             html += `<div class="grid fade-in">`;
-            filteredCases.forEach((uc, index) => {
+            filteredCases.forEach((uc) => {
+                // KORREKTUR: Ermittle den echten globalen Index für die Verknüpfung
+                const globalIndex = useCases.findIndex(u => u.title === uc.title);
                 html += `
-                    <div class="card" onclick="renderUseCaseDetails(${index}, '${uc.title.replace(/'/g, "\\'")}')">
+                    <div class="card" onclick="navigateTo('usecase', ${globalIndex})">
                         <div class="card-title" style="font-size: 1.1em; color:#333;">${uc.title}</div>
                         <div style="margin-top: 10px; font-size: 0.85em; color: var(--hashtag-color);">${uc.tags.join(' ')}</div>
                     </div>
@@ -380,7 +433,7 @@
             contentArea.innerHTML = html;
         }
 
-        function renderHashtag(tag) {
+        function showHashtagView(tag) {
             breadcrumb.classList.remove('hidden');
             breadcrumbCurrent.innerHTML = ` > 🔍 Suche nach: ${tag}`;
 
@@ -389,10 +442,9 @@
             let html = `<h2>Use-Cases mit dem Tag: ${tag}</h2>`;
             html += `<div class="grid fade-in">`;
             filteredCases.forEach((uc) => {
-                // Find original index
-                const originalIndex = useCases.findIndex(u => u.title === uc.title);
+                const globalIndex = useCases.findIndex(u => u.title === uc.title);
                 html += `
-                    <div class="card" onclick="renderUseCaseDetails(${originalIndex}, '${uc.title.replace(/'/g, "\\'")}')">
+                    <div class="card" onclick="navigateTo('usecase', ${globalIndex})">
                         <div class="card-title" style="font-size: 1.1em; color:#333;">${uc.title}</div>
                         <div style="margin-top: 10px; font-size: 0.85em; color: var(--hashtag-color);">${uc.tags.join(' ')}</div>
                     </div>
@@ -402,34 +454,34 @@
             contentArea.innerHTML = html;
         }
 
-        function renderUseCaseDetails(index, titleStr) {
+        function showUseCaseDetailsView(index) {
             const uc = useCases[index];
+            if (!uc) return;
             breadcrumb.classList.remove('hidden');
-            // Check if we came from a category or tag to build breadcrumb intuitively
             breadcrumbCurrent.innerHTML = ` > 📋 ${uc.title}`;
 
             let html = `<div class="fade-in">`;
             html += `<h2>${uc.title}</h2>`;
             html += `<p>Um diesen Use-Case bestmöglich abzubilden, empfehlen wir folgende Tools & Dienste:</p>`;
 
-            let hasTools = false;
-
             uc.reqs.forEach(req => {
-                hasTools = true;
                 html += `<div class="tool-box">
                             <h3>Bedarf: ${req.action}</h3>
-                            <p><strong>Empfohlenes Tool:</strong></p>`;
+                            <p><strong>Empfohlenes Tool:</strong></p>
+                            <div class="tool-flex-container">`;
                 req.tools.forEach(t => {
                     if(t.url) {
                         html += `<a href="${t.url}" target="_blank" class="tool-link">🔗 ${t.name}</a>`;
                     } else {
                         html += `<span class="tool-link" style="background-color:#6c757d; cursor:default;">✔️ ${t.name}</span>`;
                     }
+                    // NEU: Der gewünschte Erklär-Button mit Info-Popup
+                    html += `<button class="explain-btn" onclick="alert('wird noch hinzugefügt')">❓ Bitte erkläre mir dieses Tool</button>`;
                 });
-                html += `</div>`;
+                html += `   </div>
+                        </div>`;
             });
 
-            // Datenschutz / Fallback Notice
             html += `
                 <div class="fallback-notice">
                     <strong>Hinweis:</strong> Falls für Ihre konkreten Anforderungen keine direkte Verlinkung vorhanden ist oder interne Tools den Bedarf nicht vollständig abdecken, empfehlen wir die Nutzung datenschutzkonformer, kostenloser Alternativen. 
@@ -438,19 +490,15 @@
                 </div>
             `;
 
-            // Related Hashtags
             html += `<div class="hashtags">
                         <strong style="width: 100%; margin-bottom: 10px;">Verwandte Themen & Use-Cases:</strong>`;
             uc.tags.forEach(tag => {
-                html += `<span class="hashtag" onclick="renderHashtag('${tag}')">${tag}</span>`;
+                html += `<span class="hashtag" onclick="navigateTo('hashtag', '${tag}')">${tag}</span>`;
             });
             html += `</div></div>`;
 
             contentArea.innerHTML = html;
         }
-
-        // Initialize App
-        renderHome();
 
     </script>
 </body>
